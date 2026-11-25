@@ -1,0 +1,91 @@
+
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+struct Edge
+{
+    int u, v, weight;
+};
+
+int parent[10];
+
+int find(int i)
+{
+    while (parent[i] != i)
+    {
+        i = parent[i];
+    }
+    return i;
+}
+
+void unionSet(int u, int v)
+{
+    int a = find(u);
+    int b = find(v);
+
+    parent[a] = b;
+}
+
+int main()
+{
+    int n = 5;
+    int e = 7;
+
+    Edge edges[7] = {
+        {0, 1, 2},
+        {0, 3, 6},
+        {1, 2, 3},
+        {1, 3, 8},
+        {1, 4, 5},
+        {2, 4, 7},
+        {3, 4, 9}
+    };
+
+    // Initialize parent array
+    for (int i = 0; i < n; i++)
+    {
+        parent[i] = i;
+    }
+
+    // Sort edges by weight
+    sort(edges, edges + e,
+         [](Edge a, Edge b)
+         {
+             return a.weight < b.weight;
+         });
+
+    int minCost = 0;
+    int count = 0;
+
+    cout << "Edges in Minimum Spanning Tree:\n";
+
+    for (int i = 0; i < e && count < n - 1; i++)
+    {
+        int u = edges[i].u;
+        int v = edges[i].v;
+
+        if (find(u) != find(v))
+        {
+            cout << u << " - " << v
+                 << " : " << edges[i].weight << endl;
+
+            minCost += edges[i].weight;
+
+            unionSet(u, v);
+            count++;
+        }
+    }
+
+    if (count != n - 1)
+    {
+        cout << "Graph is disconnected";
+    }
+    else
+    {
+        cout << "Minimum Cost = " << minCost;
+    }
+
+    return 0;
+}
+
